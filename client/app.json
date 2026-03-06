@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "CareLoop",
+    "slug": "careloop",
+    "scheme": "careloop",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "plugins": ["expo-router"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#FFFFFF"
+      }
+    }
+  }
+}

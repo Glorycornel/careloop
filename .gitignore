@@ -1,0 +1,34 @@
+# Secrets and local env
+.env
+.env.local
+*.env.local
+client/.env
+client/.env.local
+server/.env
+server/.env.local
+
+# Local scratch
+process.txt
+
+# Node / Expo
+client/node_modules/
+client/.expo/
+client/dist/
+.pnpm-store/
+
+# Python
+server/.venv/
+server/venv/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.coverage
+
+# Logs
+*.log
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/

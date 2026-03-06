@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:15
+    container_name: careloop_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-careloop}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-careloop}
+      POSTGRES_DB: ${POSTGRES_DB:-careloop}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: careloop_api
+    env_file: .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg2://careloop:careloop@db:5432/careloop}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change_me}
+      JWT_ALGORITHM: ${JWT_ALGORITHM:-HS256}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-60}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - ./server/app:/app/app
+      - ./server/alembic:/app/alembic
+      - ./server/alembic.ini:/app/alembic.ini
+
+volumes:
+  postgres_data:
