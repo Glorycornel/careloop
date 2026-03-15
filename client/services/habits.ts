@@ -4,7 +4,11 @@ import { Habit, HabitToday } from '@/types/habit';
 type HabitPayload = {
   title: string;
   description?: string | null;
+  category: 'build' | 'quit';
   frequency_type: string;
+  active_days: string;
+  daily_target?: number | null;
+  icon?: string | null;
   reminder_time?: string | null;
   is_active?: boolean;
 };

@@ -20,10 +20,14 @@ def get_current_user(
     )
     try:
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+        if payload.get("type") != "access":
+            raise credentials_exception
         user_id = payload.get("sub")
         if user_id is None:
             raise credentials_exception
     except JWTError as exc:
+        raise credentials_exception from exc
+    except ValueError as exc:
         raise credentials_exception from exc
 
     user = db.query(User).filter(User.id == int(user_id)).first()

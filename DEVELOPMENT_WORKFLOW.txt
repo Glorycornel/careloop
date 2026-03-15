@@ -1,0 +1,35 @@
+CareLoop Development Workflow
+
+Backend Python environment
+
+Use an isolated virtualenv for backend work instead of installing dependencies into the global pyenv interpreter.
+
+Setup
+
+1. cd /home/glory/careloop/server
+2. bash ./scripts/setup_venv.sh
+3. source ./.venv/bin/activate
+
+Common commands
+
+- pytest tests -q
+- PYTHONPATH=. alembic upgrade head
+- uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+Docker-based local backend
+
+From /home/glory/careloop:
+
+- docker compose up -d db api
+
+Mobile E2E
+
+From /home/glory/careloop/client:
+
+- set MAESTRO_APP_ID to the installed app id
+- pnpm e2e:mobile:auth
+
+Notes
+
+- The current host shell did not have a dedicated Java or Android toolchain preinstalled
+- Maestro flows are checked into client/.maestro

@@ -19,3 +19,6 @@ class User(Base):
 
     habits = relationship("Habit", back_populates="user", cascade="all, delete-orphan")
     habit_logs = relationship("HabitLog", back_populates="user", cascade="all, delete-orphan")
+    refresh_tokens = relationship(
+        "RefreshToken", back_populates="user", cascade="all, delete-orphan"
+    )

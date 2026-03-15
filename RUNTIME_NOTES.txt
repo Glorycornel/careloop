@@ -1,0 +1,42 @@
+CareLoop Runtime Notes
+
+Backend safety checks now enforce a few rules at startup:
+
+- APP_ENV=production requires a non-default JWT_SECRET_KEY
+- APP_ENV=production requires a non-default DATABASE_URL
+- APP_ENV=production requires explicit ALLOWED_ORIGINS
+- ALLOWED_ORIGINS cannot contain * in production
+- ACCESS_TOKEN_EXPIRE_MINUTES must be greater than 0 in every environment
+- REFRESH_TOKEN_EXPIRE_DAYS must be greater than 0 in every environment
+
+Observability
+
+- Logs can be emitted as json or plain text via LOG_FORMAT
+- Each API response includes an X-Request-ID header
+- Unhandled server exceptions are logged with request context
+- ERROR_REPORTING_WEBHOOK_URL can be set to forward exception events to an external webhook
+
+Recommended production settings
+
+- Set APP_ENV=production
+- Set LOG_LEVEL=INFO or WARNING
+- Set LOG_FORMAT=json
+- Set JWT_SECRET_KEY to a long random secret
+- Set DATABASE_URL to the production database
+- Set ALLOWED_ORIGINS to the exact frontend origins allowed to call the API
+- Set UVICORN_WORKERS based on CPU availability
+
+Example
+
+APP_ENV=production
+LOG_LEVEL=INFO
+LOG_FORMAT=json
+ALLOWED_ORIGINS=https://app.example.com,https://admin.example.com
+DATABASE_URL=postgresql+psycopg2://user:password@db-host:5432/careloop
+JWT_SECRET_KEY=replace-with-a-long-random-secret
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+REFRESH_TOKEN_EXPIRE_DAYS=30
+UVICORN_WORKERS=2
+
+Development defaults remain usable for local work, including local Expo and localhost origins.

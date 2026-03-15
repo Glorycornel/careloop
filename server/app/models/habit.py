@@ -13,7 +13,11 @@ class Habit(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     title: Mapped[str] = mapped_column(String(140))
     description: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    category: Mapped[str] = mapped_column(String(20), default="build")
     frequency_type: Mapped[str] = mapped_column(String(20), default="daily")
+    active_days: Mapped[str] = mapped_column(String(40), default="mon,tue,wed,thu,fri,sat,sun")
+    daily_target: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    icon: Mapped[str] = mapped_column(String(8), default="✅")
     reminder_time: Mapped[time | None] = mapped_column(Time, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(

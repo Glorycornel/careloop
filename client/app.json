@@ -6,13 +6,27 @@
     "version": "0.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      "expo-dev-client"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.careloop.app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "com.careloop.app",
       "adaptiveIcon": {
         "backgroundColor": "#FFFFFF"
+      }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "eb594161-efea-4050-a1de-2dcb1a45b14e"
       }
     }
   }

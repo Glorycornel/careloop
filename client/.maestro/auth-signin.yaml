@@ -1,0 +1,18 @@
+appId: ${MAESTRO_APP_ID}
+---
+- launchApp
+- assertVisible: "Today"
+- tapOn: "Settings"
+- assertVisible: "⚙️ Settings"
+- tapOn: "Create account"
+- assertVisible: "Create your CareLoop"
+- tapOn: "Sign in"
+- assertVisible: "Welcome back"
+- tapOn: "Email"
+- inputText: ${MAESTRO_E2E_EMAIL}
+- tapOn: "Password"
+- inputText: ${MAESTRO_E2E_PASSWORD}
+- hideKeyboard
+- tapOn: "Sign In"
+- assertVisible: "⚙️ Settings"
+- assertVisible: "Save username"
