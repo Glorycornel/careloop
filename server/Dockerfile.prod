@@ -5,12 +5,12 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY requirements.txt /app/requirements.txt
+COPY server/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-COPY app /app/app
-COPY alembic.ini /app/alembic.ini
-COPY alembic /app/alembic
+COPY server/app /app/app
+COPY server/alembic.ini /app/alembic.ini
+COPY server/alembic /app/alembic
 
 RUN adduser --disabled-password --gecos "" appuser && chown -R appuser:appuser /app
 USER appuser

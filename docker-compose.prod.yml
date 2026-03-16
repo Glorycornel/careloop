@@ -18,8 +18,8 @@ services:
 
   api:
     build:
-      context: ./server
-      dockerfile: Dockerfile.prod
+      context: .
+      dockerfile: server/Dockerfile.prod
     container_name: careloop_api_prod
     restart: unless-stopped
     env_file: .env
