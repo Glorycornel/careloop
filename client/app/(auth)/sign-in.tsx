@@ -2,7 +2,17 @@ import { Link, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import axios from 'axios';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 
 import { Colors } from '@/constants/colors';
 import { usePalette } from '@/hooks/usePalette';
@@ -68,67 +78,78 @@ export default function SignInScreen() {
       <Pressable style={styles.backdrop} onPress={() => router.back()} />
       <KeyboardAvoidingView
         style={styles.sheetWrap}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 12 : 0}
       >
-        <View style={styles.sheet}>
-          <View style={styles.grabber} />
-          <Pressable style={styles.close} onPress={() => router.back()}>
-            <View style={styles.closeInner}>
-              <Text style={styles.closeIcon}>×</Text>
-              <Text style={styles.closeText}>Close</Text>
-            </View>
-          </Pressable>
-          <Text style={styles.title}>Welcome back</Text>
-          <Text style={styles.subtitle}>Sign in to keep your streaks alive.</Text>
-
-          <View style={styles.form}>
-            <Controller
-              control={control}
-              name="email"
-              rules={{ required: true }}
-              render={({ field: { onChange, value } }) => (
-                <TextInput
-                  style={styles.input}
-                  placeholder="Email"
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  value={value}
-                  onChangeText={onChange}
-                />
-              )}
-            />
-            <Controller
-              control={control}
-              name="password"
-              rules={{ required: true }}
-              render={({ field: { onChange, value } }) => (
-                <TextInput
-                  style={styles.input}
-                  placeholder="Password"
-                  secureTextEntry
-                  value={value}
-                  onChangeText={onChange}
-                />
-              )}
-            />
-          </View>
-          {formError ? <Text style={styles.error}>{formError}</Text> : null}
-
-          <Pressable style={styles.button} onPress={handleSubmit(onSubmit)} disabled={loading}>
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <View style={styles.buttonInner}>
-                <Text style={styles.buttonIcon}>→</Text>
-                <Text style={styles.buttonText}>Sign In</Text>
+        <ScrollView
+          contentContainerStyle={styles.sheetScrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.sheet}>
+            <View style={styles.grabber} />
+            <Pressable style={styles.close} onPress={() => router.back()}>
+              <View style={styles.closeInner}>
+                <Text style={styles.closeIcon}>×</Text>
+                <Text style={styles.closeText}>Close</Text>
               </View>
-            )}
-          </Pressable>
+            </Pressable>
+            <Text style={styles.title}>Welcome back</Text>
+            <Text style={styles.subtitle}>Sign in to keep your streaks alive.</Text>
 
-          <Text style={styles.footer}>
-            New here? <Link href="/(auth)/sign-up">Create an account</Link>
-          </Text>
-        </View>
+            <View style={styles.form}>
+              <Controller
+                control={control}
+                name="email"
+                rules={{ required: true }}
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Email"
+                    placeholderTextColor={styles.placeholder.color}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    autoCorrect={false}
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="password"
+                rules={{ required: true }}
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Password"
+                    placeholderTextColor={styles.placeholder.color}
+                    secureTextEntry
+                    autoCorrect={false}
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+            </View>
+            {formError ? <Text style={styles.error}>{formError}</Text> : null}
+
+            <Pressable style={styles.button} onPress={handleSubmit(onSubmit)} disabled={loading}>
+              {loading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <View style={styles.buttonInner}>
+                  <Text style={styles.buttonIcon}>→</Text>
+                  <Text style={styles.buttonText}>Sign In</Text>
+                </View>
+              )}
+            </Pressable>
+
+            <Text style={styles.footer}>
+              New here? <Link href="/(auth)/sign-up">Create an account</Link>
+            </Text>
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </View>
   );
@@ -147,13 +168,18 @@ function makeStyles(palette: typeof Colors) {
       flex: 1,
       justifyContent: 'flex-end',
     },
+    sheetScrollContent: {
+      flexGrow: 1,
+      justifyContent: 'flex-end',
+    },
     sheet: {
       backgroundColor: palette.card,
       borderTopLeftRadius: 24,
       borderTopRightRadius: 24,
       padding: 20,
-      paddingBottom: 32,
+      paddingBottom: 40,
       minHeight: '66%',
+      maxHeight: '92%',
       borderWidth: 1,
       borderColor: palette.border,
     },
@@ -187,6 +213,9 @@ function makeStyles(palette: typeof Colors) {
       borderWidth: 1,
       borderColor: palette.border,
       color: palette.text,
+    },
+    placeholder: {
+      color: palette.muted,
     },
     button: {
       marginTop: 20,

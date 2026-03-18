@@ -109,6 +109,7 @@ export default function HabitsScreen() {
   const addHabit = useHabitStore((state) => state.addHabit);
   const [group, setGroup] = useState<HabitGroup>('all');
   const [loading, setLoading] = useState(false);
+  const [addingTemplateTitle, setAddingTemplateTitle] = useState<string | null>(null);
   const [habits, setHabits] = useState<Habit[]>([]);
 
   const loadHabits = useCallback(async () => {
@@ -145,20 +146,35 @@ export default function HabitsScreen() {
     return TEMPLATE_HABITS.filter((item) => item.group === group);
   }, [group]);
 
+  const existingTemplateTitles = useMemo(
+    () => new Set(habits.map((habit) => habit.title.trim().toLowerCase())),
+    [habits],
+  );
+
   const addFromTemplate = async (template: TemplateHabit) => {
+    const normalizedTitle = template.title.trim().toLowerCase();
+    if (addingTemplateTitle === template.title || existingTemplateTitles.has(normalizedTitle)) {
+      return;
+    }
+
     requireAuth(async () => {
-      await addHabit({
-        title: template.title,
-        description: template.description,
-        category: template.group,
-        frequency_type: 'daily',
-        active_days: 'mon,tue,wed,thu,fri,sat,sun',
-        daily_target: null,
-        icon: iconForHabit(template.title, template.group),
-        reminder_time: '08:00',
-        is_active: true,
-      });
-      await loadHabits();
+      setAddingTemplateTitle(template.title);
+      try {
+        await addHabit({
+          title: template.title,
+          description: template.description,
+          category: template.group,
+          frequency_type: 'daily',
+          active_days: 'mon,tue,wed,thu,fri,sat,sun',
+          daily_target: null,
+          icon: iconForHabit(template.title, template.group),
+          reminder_time: '08:00',
+          is_active: true,
+        });
+        await loadHabits();
+      } finally {
+        setAddingTemplateTitle(null);
+      }
     });
   };
 
@@ -201,7 +217,20 @@ export default function HabitsScreen() {
             {filteredTemplates.map((template) => (
               <Pressable
                 key={template.title}
-                style={styles.templateCard}
+                style={({ pressed }) => {
+                  const isAdding = addingTemplateTitle === template.title;
+                  const alreadyAdded = existingTemplateTitles.has(template.title.trim().toLowerCase());
+                  return [
+                    styles.templateCard,
+                    pressed && !isAdding && !alreadyAdded && styles.templateCardPressed,
+                    isAdding && styles.templateCardPending,
+                    alreadyAdded && styles.templateCardAdded,
+                  ];
+                }}
+                disabled={
+                  addingTemplateTitle === template.title ||
+                  existingTemplateTitles.has(template.title.trim().toLowerCase())
+                }
                 onPress={() => addFromTemplate(template)}
               >
                 <View style={styles.templateTopRow}>
@@ -209,7 +238,13 @@ export default function HabitsScreen() {
                     <Text style={styles.habitIcon}>{iconForHabit(template.title, template.group)}</Text>
                     <Text style={styles.templateTitle}>{template.title}</Text>
                   </View>
-                  <Text style={styles.templateAdd}>＋</Text>
+                  {addingTemplateTitle === template.title ? (
+                    <ActivityIndicator size="small" color={palette.primary} />
+                  ) : existingTemplateTitles.has(template.title.trim().toLowerCase()) ? (
+                    <Text style={styles.templateAddedLabel}>Added</Text>
+                  ) : (
+                    <Text style={styles.templateAdd}>＋</Text>
+                  )}
                 </View>
                 <Text style={styles.templateDesc}>{template.description}</Text>
               </Pressable>
@@ -329,6 +364,20 @@ function makeStyles(palette: typeof Colors) {
     padding: 12,
     marginBottom: 8,
   },
+  templateCardPressed: {
+    transform: [{ scale: 0.985 }],
+    borderColor: palette.primary,
+    backgroundColor: palette.primarySoft,
+  },
+  templateCardPending: {
+    borderColor: palette.primary,
+    backgroundColor: palette.primarySoft,
+    opacity: 0.85,
+  },
+  templateCardAdded: {
+    borderColor: palette.border,
+    backgroundColor: palette.secondarySoft,
+  },
   templateTopRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -347,6 +396,12 @@ function makeStyles(palette: typeof Colors) {
     color: palette.primary,
     fontSize: 18,
     fontWeight: '800',
+  },
+  templateAddedLabel: {
+    color: palette.secondary,
+    fontWeight: '800',
+    fontSize: 12,
+    textTransform: 'uppercase',
   },
   templateDesc: {
     color: palette.muted,

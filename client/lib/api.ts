@@ -8,16 +8,17 @@ import {
 } from '@/lib/storage';
 import type { AuthTokens } from '@/services/auth';
 
-const baseURL = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+const fallbackBaseURL = __DEV__ ? 'http://localhost:8000' : 'https://careloop-wnnp.onrender.com';
+const baseURL = process.env.EXPO_PUBLIC_API_BASE_URL || fallbackBaseURL;
 
 const api = axios.create({
   baseURL,
-  timeout: 10000,
+  timeout: 30000,
 });
 
 const refreshClient = axios.create({
-  baseURL: process.env.EXPO_PUBLIC_API_BASE_URL || 'http://localhost:8000',
-  timeout: 10000,
+  baseURL,
+  timeout: 30000,
 });
 
 function sleep(ms: number) {

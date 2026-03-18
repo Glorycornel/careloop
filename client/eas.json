@@ -1,11 +1,18 @@
 {
   "cli": {
-    "version": ">= 16.20.0"
+    "version": ">= 16.20.0",
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://careloop-wnnp.onrender.com"
+      },
+      "android": {
+        "buildType": "apk"
+      }
     },
     "development-simulator": {
       "developmentClient": true,
@@ -15,9 +22,18 @@
       }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://careloop-wnnp.onrender.com"
+      },
+      "android": {
+        "buildType": "apk"
+      }
     },
     "production": {
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://careloop-wnnp.onrender.com"
+      },
       "autoIncrement": true
     }
   }

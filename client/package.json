@@ -12,6 +12,7 @@
     "build:dev:ios": "npx eas-cli build -p ios --profile development",
     "build:dev:ios-sim": "npx eas-cli build -p ios --profile development-simulator",
     "build:dev:android": "npx eas-cli build -p android --profile development",
+    "build:apk:android": "npx eas-cli build -p android --profile preview",
     "e2e:mobile:auth": "bash ./scripts/run_mobile_e2e.sh",
     "test": "jest",
     "lint": "eslint . --ext .ts,.tsx",
