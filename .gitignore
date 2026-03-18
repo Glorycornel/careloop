@@ -9,6 +9,8 @@ server/.env.local
 
 # Local scratch
 process.txt
+STACK_AUDIT.md
+STACK_AUDIT.txt
 
 # Node / Expo
 client/node_modules/
